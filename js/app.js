@@ -55,25 +55,23 @@ window.fbAsyncInit = function() {
 var loadPagesInfo = function(pages){
 
   var counter = 0, //計算現在讀完資料沒
-      current = $('<div class="current"></div>').appendTo($listRoot); //定位當前的資料
+      current = $('<div class="current"></div>').appendTo($listRoot); //定位當前的
 
   pages.forEach(function(item, index){
     //從 template 塞資料
     var $page = $(tmpl).clone();
     FB.api(item.id, function(response){
-      // 塞 name, about, like 數到 html 裡。
-	  $page.find('.title a').text(response.name).attr('href',response.link);
-	  $page.find('.about').text(response.about);
-	  $page.find('.likes').text(response.likes);
-      FB.api(item.id+'/picture?type=large'/*輸入圖片連結*/, function(response){
-        // 塞資料到 html 中
-		$page.find('.thumbnail img').attr('src',response.data.url);
-		$page.appendTo(current);
+      $page.find('.title a').attr('src', response.link).text(response.name);
+      $page.find('.likes').text(response.likes);
+      $page.find('.about').text(response.about);
+      FB.api(response.id+'/picture?type=large', function(response){
+        $page.find('img').attr('src',response.data.url);
+        $page.appendTo(current);
         counter++;
+
         // 塞完資料以後處理一下斷行
         if(counter===pages.length){
-          // 利用 .current div:nth-child(3n)，讓每三個page 斷行
-		  $('.current div:nth-child(3n)').after('<div class="clearfix"></div>');
+          $( '.current div:nth-child(3n)').after('<div class="clearfix"></div>');
           current.children('div').unwrap();
         }
       });
