@@ -19,35 +19,31 @@ window.fbAsyncInit = function() {
       //清空結果
       $($listRoot).empty();
       $('#moreBtn').addClass('hide');
-      // 臉書登入SDK
       FB.login(function(response) {
         if(response.authResponse) {
             //讀取個人信息
-            FB.api( '/me?fields=name,picture,likes.limit(60)'/*填入我們要的request*/, function(response){
-              // 把資訊插入到html裡，並顯示出來
-			  $('.user-name').text(response.name);
-			  $('.user-photo').attr('src',response.picture.data.url);
-			  $('#user').removeClass('hide');
-              // ---------------
-              // 讀取 like 的列表，並儲存到 likes, 以及下一組資料的連結到 next
-			  var likes=response.likes.data;
-			  var next=response.likes.paging.next;
-              //把讀到的資料放進html
+            FB.api('/me?fields=name,picture,likes.limit(60)', function(response){
+              $('.user-name').text(response.name);
+              $('.user-photo').attr('src',response.picture.data.url);
+              $('#user').removeClass('hide');
+              var likes = response.likes.data;
+              var next = response.likes.paging.next;
               loadPagesInfo(likes);
-              // save next request url to moreBtn and show it
-			  $('#moreBtn').data('next',next).removeClass('hide');
+              // save next request url
+              $('#moreBtn').removeClass('hide').data('next',next);
             });
         }else{
             console.log('User cancelled login or did not fully authorize.');
         }
-      }, {scope: 'user_likes'});//拿使用者喜歡的專頁權限
+      }, {scope: 'user_likes'});
       e.preventDefault();
     });
 
     $('#moreBtn').click(function(e){
       $.getJSON( $(this).data('next'), function(response){
-        //更新列表資料
-		loadPagesInfo(response.data);
+        loadPagesInfo(response.data);
+        var next = response.paging.next;
+        $('#moreBtn').data('next',next);
       })
       e.preventDefault();
     });
