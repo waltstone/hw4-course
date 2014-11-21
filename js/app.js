@@ -29,6 +29,7 @@ window.fbAsyncInit = function() {
 			  $('.user-photo').attr('src',response.picture.data.url);
 			  $('#user').removeClass('hide');
               // ---------------
+			  console.log(response);
               // 讀取 like 的列表，並儲存到 likes, 以及下一組資料的連結到 next
 			  var likes=response.likes.data;
 			  var next=response.likes.paging.next;
